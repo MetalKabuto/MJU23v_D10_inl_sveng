@@ -90,19 +90,31 @@
                 }
                 else if (command == "delete")
                 {
-                    if (argument.Length == 3)
+                    //Har två catch, eftersom den hade två olika exceptions.
+                    try
                     {
-                        DeleteWord(argument[1], argument[2]);
+                        if (argument.Length == 3)
+                        {
+                            DeleteWord(argument[1], argument[2]);
+                        }
+                        else if (argument.Length == 1)
+                        {
+                            //samma namnbyte som med 'new'
+                            Console.WriteLine("Write word in Swedish: ");
+                            string swedish = Console.ReadLine();
+                            Console.Write("Write word in English: ");
+                            string english = Console.ReadLine();
+                            //Gjorde koden efter readlines till en metod, eftersom den är lika mellan if satserna.
+                            DeleteWord(swedish, english);
+                        }
                     }
-                    else if (argument.Length == 1)
+                    catch (NullReferenceException error)
                     {
-                        //samma namnbyte som med 'new'
-                        Console.WriteLine("Write word in Swedish: ");
-                        string swedish = Console.ReadLine();
-                        Console.Write("Write word in English: ");
-                        string english = Console.ReadLine();
-                        //Gjorde koden efter readlines till en metod, eftersom den är lika mellan if satserna.
-                        DeleteWord(swedish, english);
+                        Console.WriteLine($"ERROR: {error}\nListan är inte initialiserad!");
+                    }
+                    catch (ArgumentOutOfRangeException error)
+                    {
+                        Console.WriteLine($"ERROR: {error}\nDet ordet finns inte i listan!");
                     }
                 }
                 else if (command == "translate")
@@ -164,8 +176,6 @@
         private static void DeleteWord(string swedish, string english)
         {
             int index = -1;
-            //FIXME: System.NullReferenceException: 'Object reference not set to an instance of an object.'
-            //Om listan är tom
             for (int i = 0; i < dictionary.Count; i++)
             {
                 SweEngGloss gloss = dictionary[i];
@@ -173,8 +183,6 @@
                 if (gloss.word_swe == swedish && gloss.word_eng == english)
                     index = i;
             }
-            //FIXME: System.ArgumentOutOfRangeException: 'Index was out of range. Must be non-negative and less than the size of the collection. Arg_ParamName_Name'
-            //Om man stavar fel på ett av orden
             dictionary.RemoveAt(index);
         }
 
