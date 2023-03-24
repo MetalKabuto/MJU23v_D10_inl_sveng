@@ -66,23 +66,26 @@
                 //Tror inte new behöver en metod, eftersom den bara har en rad som är dubblett
                 else if (command == "new")
                 {
-                    if (argument.Length == 3)
+                    //Samma try catch som med 'list', eftersom det var samma error
+                    try
                     {
-                        //Fick error: object reference not set to an instance of an object
-                        //om man inte har laddat från en fil
-                        dictionary.Add(new SweEngGloss(argument[1], argument[2]));
-                        //Om man bara skriver in ett ord händer ingenting, men programmet fortsätter köra
+                        if (argument.Length == 3)
+                        {
+                            dictionary.Add(new SweEngGloss(argument[1], argument[2]));
+                            //Om man bara skriver in ett ord händer ingenting, men programmet fortsätter köra
+                        }
+                        else if (argument.Length == 1)
+                        {
+                            Console.WriteLine("Write word in Swedish: ");
+                            string swedish = Console.ReadLine();
+                            Console.Write("Write word in English: ");
+                            string english = Console.ReadLine();
+                            dictionary.Add(new SweEngGloss(swedish, english));
+                        }
                     }
-                    else if(argument.Length == 1)
+                    catch(NullReferenceException error)
                     {
-                        //bytte 's' till 'swedish' och 'e' till 'english'
-                        Console.WriteLine("Write word in Swedish: ");
-                        string swedish = Console.ReadLine();
-                        Console.Write("Write word in English: ");
-                        string english = Console.ReadLine();
-                        //FIXME: System.NullReferenceException: 'Object reference not set to an instance of an object.'
-                        //om man inte har laddat från en fil
-                        dictionary.Add(new SweEngGloss(swedish, english));
+                        Console.WriteLine($"ERROR: {error}\nListan är inte initialiserad!");
                     }
                 }
                 else if (command == "delete")
@@ -104,17 +107,25 @@
                 }
                 else if (command == "translate")
                 {
-                    if (argument.Length == 2)
+                    //Samma try catch som med 'list' och 'new', eftersom det var samma error
+                    try
                     {
-                        //Gjorde en metod istället
-                        TranslateWord(argument[1]);
+                        if (argument.Length == 2)
+                        {
+                            //Gjorde en metod istället
+                            TranslateWord(argument[1]);
+                        }
+                        else if (argument.Length == 1)
+                        {
+                            Console.WriteLine("Write word to be translated: ");
+                            string input = Console.ReadLine();
+                            //Gjorde en metod istället
+                            TranslateWord(input);
+                        }
                     }
-                    else if (argument.Length == 1)
+                    catch (NullReferenceException error)
                     {
-                        Console.WriteLine("Write word to be translated: ");
-                        string input = Console.ReadLine();
-                        //Gjorde en metod istället
-                        TranslateWord(input);
+                        Console.WriteLine($"ERROR: {error}\nListan är inte initialiserad!");
                     }
                 }
                 //Tror inte help behöver en metod, eftersom den inte har koddubbletter
@@ -140,7 +151,6 @@
 
         private static void TranslateWord(string word)
         {
-            //får error "object reference not set to an instance of an object" om man inte har laddat en fil
             foreach (SweEngGloss gloss in dictionary)
             {
                 //blir ingen utskrift om man försöker med ett ord som inte finns, fast programmet fortsätter köra
