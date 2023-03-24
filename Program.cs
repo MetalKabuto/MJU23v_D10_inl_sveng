@@ -34,17 +34,32 @@
                 }
                 else if (command == "load")
                 {
-                    //kan inte ladda min testfil med 'load C:\Users\Hanne\Desktop\Datalogiskt tänkande och Problemlösning\Vecka 2\test.txt'
-                    //tror det är för att pathen innehåller mellanslag, vilket splittar 'argument'
-                    if (argument.Length == 2)
+                    try
                     {
-                        Console.WriteLine(argument[0] + " " + argument[1]);
-                        LoadFile(argument[1]);
+                        //kan inte ladda min testfil med 'load C:\Users\Hanne\Desktop\Datalogiskt tänkande och Problemlösning\Vecka 2\test.txt'
+                        //tror det är för att pathen innehåller mellanslag, vilket splittar 'argument'
+                        if (argument.Length == 2)
+                        {
+                            LoadFile(argument[1]);
+                        }
+                        else if (argument.Length == 1)
+                        {
+                            //extraherade innehållet till en metod
+                            LoadFile(defaultFile);
+                        }
                     }
-                    else if(argument.Length == 1)
+                    catch (System.IO.FileNotFoundException)
                     {
-                        //extraherade innehållet till en metod
-                        LoadFile(defaultFile);
+                        Console.WriteLine($"ERROR: Kan inte hitta den filen!");
+                    }
+                    catch (System.IO.DirectoryNotFoundException)
+                    {
+                        Console.WriteLine($"ERROR: Kunde inte hitta mappen!");
+                    }
+                    catch (System.UnauthorizedAccessException)
+                    {
+                        //Fick detta error: System.UnauthorizedAccessException: 'Access to the path 'C:\Users\Hanne\Desktop\test' is denied.'
+                        Console.WriteLine($"ERROR: Access denied?");
                     }
                 }
                 else if (command == "list")
@@ -58,9 +73,9 @@
                             Console.WriteLine($"{gloss.word_swe,-10}  - {gloss.word_eng,-10}");
                         }
                     }
-                    catch (NullReferenceException error)
+                    catch (NullReferenceException)
                     {
-                        Console.WriteLine($"ERROR: {error}\nListan är tom!");
+                        Console.WriteLine($"ERROR: Listan är tom!");
                     }
                 }
                 //Tror inte new behöver en metod, eftersom den bara har en rad som är dubblett
@@ -83,9 +98,9 @@
                             dictionary.Add(new SweEngGloss(swedish, english));
                         }
                     }
-                    catch(NullReferenceException error)
+                    catch(NullReferenceException )
                     {
-                        Console.WriteLine($"ERROR: {error}\nListan är inte initialiserad!");
+                        Console.WriteLine($"ERROR: Listan är inte initialiserad!");
                     }
                 }
                 else if (command == "delete")
@@ -108,13 +123,13 @@
                             DeleteWord(swedish, english);
                         }
                     }
-                    catch (NullReferenceException error)
+                    catch (NullReferenceException)
                     {
-                        Console.WriteLine($"ERROR: {error}\nListan är inte initialiserad!");
+                        Console.WriteLine($"ERROR: Listan är inte initialiserad!");
                     }
-                    catch (ArgumentOutOfRangeException error)
+                    catch (ArgumentOutOfRangeException)
                     {
-                        Console.WriteLine($"ERROR: {error}\nDet ordet finns inte i listan!");
+                        Console.WriteLine($"ERROR: Den kombinationen finns inte i listan!");
                     }
                 }
                 else if (command == "translate")
@@ -135,9 +150,9 @@
                             TranslateWord(input);
                         }
                     }
-                    catch (NullReferenceException error)
+                    catch (NullReferenceException)
                     {
-                        Console.WriteLine($"ERROR: {error}\nListan är inte initialiserad!");
+                        Console.WriteLine($"ERROR: Listan är inte initialiserad!");
                     }
                 }
                 //Tror inte help behöver en metod, eftersom den inte har koddubbletter
@@ -188,18 +203,6 @@
 
         private static void LoadFile(string filePath)
         {
-            //FIXME: får 'could not find file' om man inte skriver in en riktig path
-            /*
-             System.IO.FileNotFoundException: 'Could not find file 'C:\Users\Hanne\Source\Repos\DTP Dag 10 inlämning\bin\Debug\net6.0\computing.lis'.'
-            */
-            //FIXME: får problem med directory
-            /*
-            System.IO.DirectoryNotFoundException: 'Could not find a part of the path 'C:\Users\Hanne\Source\Repos\DTP Dag 10 inlämning\bin\Debug\net6.0\Dokument\test.txt'.'
-            */
-            //FIXME: access denied till min mapp?
-            /*
-            System.UnauthorizedAccessException: 'Access to the path 'C:\Users\Hanne\Desktop\test' is denied.'
-            */
             using (StreamReader textFile = new StreamReader(filePath))
             {
                 dictionary = new List<SweEngGloss>(); // Empty it!
