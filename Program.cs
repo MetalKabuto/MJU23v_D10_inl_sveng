@@ -26,7 +26,6 @@
                 Console.Write("> ");
                 string[] argument = Console.ReadLine().Split();
                 string command = argument[0];
-                //FIXME: quit stänger inte av programmet
                 if (command == "quit")
                 {
                     Console.WriteLine("Goodbye!");
@@ -37,34 +36,13 @@
                     //FIXME: kan inte ladda min testfil med 'load C:\Users\Hanne\Desktop\Datalogiskt tänkande och Problemlösning\Vecka 2\test.txt'
                     if (argument.Length == 2)
                     {
-                        //döpte om 'sr' till 'textFile'
-                        //FIXME: får error om man inte skriver en ordentlig path
-                        using (StreamReader textFile = new StreamReader(argument[1]))
-                        {
-                            dictionary = new List<SweEngGloss>(); // Empty it!
-                            string line = textFile.ReadLine();
-                            while (line != null)
-                            {
-                                SweEngGloss gloss = new SweEngGloss(line);
-                                dictionary.Add(gloss);
-                                line = textFile.ReadLine();
-                            }
-                        }
+                        //extraherade innehållet till en metod
+                        LoadFile(argument[1]);
                     }
                     else if(argument.Length == 1)
                     {
-                        //samma som ovan
-                        using (StreamReader textFile = new StreamReader(defaultFile))
-                        {
-                            dictionary = new List<SweEngGloss>(); // Empty it!
-                            string line = textFile.ReadLine();
-                            while (line != null)
-                            {
-                                SweEngGloss gloss = new SweEngGloss(line);
-                                dictionary.Add(gloss);
-                                line = textFile.ReadLine();
-                            }
-                        }
+                        //extraherade innehållet till en metod
+                        LoadFile(defaultFile);
                     }
                 }
                 else if (command == "list")
@@ -174,6 +152,22 @@
                 }
             }
             while (true);
+        }
+
+        private static void LoadFile(string filePath)
+        {
+            //FIXME: får 'could not find file' om man inte skriver in en riktig path
+            using (StreamReader textFile = new StreamReader(filePath))
+            {
+                dictionary = new List<SweEngGloss>(); // Empty it!
+                string line = textFile.ReadLine();
+                while (line != null)
+                {
+                    SweEngGloss gloss = new SweEngGloss(line);
+                    dictionary.Add(gloss);
+                    line = textFile.ReadLine();
+                }
+            }
         }
     }
 }
