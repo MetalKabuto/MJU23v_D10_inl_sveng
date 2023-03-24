@@ -30,35 +30,39 @@
                 if (command == "quit")
                 {
                     Console.WriteLine("Goodbye!");
+                    break;
                 }
                 else if (command == "load")
                 {
                     //FIXME: kan inte ladda min testfil med 'load C:\Users\Hanne\Desktop\Datalogiskt tänkande och Problemlösning\Vecka 2\test.txt'
                     if (argument.Length == 2)
                     {
-                        using (StreamReader sr = new StreamReader(argument[1]))
+                        //döpte om 'sr' till 'textFile'
+                        //FIXME: får error om man inte skriver en ordentlig path
+                        using (StreamReader textFile = new StreamReader(argument[1]))
                         {
                             dictionary = new List<SweEngGloss>(); // Empty it!
-                            string line = sr.ReadLine();
+                            string line = textFile.ReadLine();
                             while (line != null)
                             {
                                 SweEngGloss gloss = new SweEngGloss(line);
                                 dictionary.Add(gloss);
-                                line = sr.ReadLine();
+                                line = textFile.ReadLine();
                             }
                         }
                     }
                     else if(argument.Length == 1)
                     {
-                        using (StreamReader sr = new StreamReader(defaultFile))
+                        //samma som ovan
+                        using (StreamReader textFile = new StreamReader(defaultFile))
                         {
                             dictionary = new List<SweEngGloss>(); // Empty it!
-                            string line = sr.ReadLine();
+                            string line = textFile.ReadLine();
                             while (line != null)
                             {
                                 SweEngGloss gloss = new SweEngGloss(line);
                                 dictionary.Add(gloss);
-                                line = sr.ReadLine();
+                                line = textFile.ReadLine();
                             }
                         }
                     }
@@ -68,8 +72,7 @@
                     //FIXME: krashar om man inte har laddat en fil
                     foreach(SweEngGloss gloss in dictionary)
                     {
-                        //vad gör -10?
-                        Console.WriteLine($"{gloss.word_swe,-10}  - {gloss.word_eng,-10}");
+                        Console.WriteLine($"{gloss.word_swe, -10}  - {gloss.word_eng,-10}");
                     }
                 }
                 else if (command == "new")
@@ -82,13 +85,14 @@
                     }
                     else if(argument.Length == 1)
                     {
+                        //bytte 's' till 'swedish' och 'e' till 'english'
                         Console.WriteLine("Write word in Swedish: ");
-                        string s = Console.ReadLine();
+                        string swedish = Console.ReadLine();
                         Console.Write("Write word in English: ");
-                        string e = Console.ReadLine();
+                        string english = Console.ReadLine();
                         //Fick error: object reference not set to an instance of an object
                         //om man inte har laddat från en fil
-                        dictionary.Add(new SweEngGloss(s, e));
+                        dictionary.Add(new SweEngGloss(swedish, english));
                     }
                 }
                 else if (command == "delete")
@@ -106,16 +110,17 @@
                     }
                     else if (argument.Length == 1)
                     {
+                        //samma namnbyte som med 'new'
                         Console.WriteLine("Write word in Swedish: ");
-                        string s = Console.ReadLine();
+                        string swedish = Console.ReadLine();
                         Console.Write("Write word in English: ");
-                        string e = Console.ReadLine();
+                        string english = Console.ReadLine();
                         int index = -1;
                         //Error om man inte har laddat en lista
                         for (int i = 0; i < dictionary.Count; i++)
                         {
                             SweEngGloss gloss = dictionary[i];
-                            if (gloss.word_swe == s && gloss.word_eng == e)
+                            if (gloss.word_swe == swedish && gloss.word_eng == english)
                                 index = i;
                         }
                         dictionary.RemoveAt(index);
@@ -138,14 +143,15 @@
                     else if (argument.Length == 1)
                     {
                         Console.WriteLine("Write word to be translated: ");
-                        string s = Console.ReadLine();
+                        //bytte 's' till 'input'
+                        string input = Console.ReadLine();
                         //error om man inte laddat en lista
                         foreach (SweEngGloss gloss in dictionary)
                         {
                             //blir ingen utskrift om man försöker med ett ord som inte finns, fast programmet fortsätter köra
-                            if (gloss.word_swe == s)
+                            if (gloss.word_swe == input)
                                 Console.WriteLine($"English for {gloss.word_swe} is {gloss.word_eng}");
-                            if (gloss.word_eng == s)
+                            if (gloss.word_eng == input)
                                 Console.WriteLine($"Swedish for {gloss.word_eng} is {gloss.word_swe}");
                         }
                     }
