@@ -54,7 +54,7 @@
                         Console.WriteLine($"{gloss.word_swe, -10}  - {gloss.word_eng,-10}");
                     }
                 }
-                //Tror inte 'new' behöver bli en metod.
+                //Tror inte new behöver en metod, eftersom den bara har en rad som är dubblett
                 else if (command == "new")
                 {
                     if (argument.Length == 3)
@@ -96,32 +96,18 @@
                 {
                     if (argument.Length == 2)
                     {
-                        //error om man inte laddat en lista
-                        foreach (SweEngGloss gloss in dictionary)
-                        {
-                            //blir ingen utskrift om man försöker med ett ord som inte finns, fast programmet fortsätter köra
-                            if (gloss.word_swe == argument[1])
-                                Console.WriteLine($"English for {gloss.word_swe} is {gloss.word_eng}");
-                            if (gloss.word_eng == argument[1])
-                                Console.WriteLine($"Swedish for {gloss.word_eng} is {gloss.word_swe}");
-                        }
+                        //Gjorde en metod istället
+                        TranslateWord(argument[1]);
                     }
                     else if (argument.Length == 1)
                     {
                         Console.WriteLine("Write word to be translated: ");
-                        //bytte 's' till 'input'
                         string input = Console.ReadLine();
-                        //error om man inte laddat en lista
-                        foreach (SweEngGloss gloss in dictionary)
-                        {
-                            //blir ingen utskrift om man försöker med ett ord som inte finns, fast programmet fortsätter köra
-                            if (gloss.word_swe == input)
-                                Console.WriteLine($"English for {gloss.word_swe} is {gloss.word_eng}");
-                            if (gloss.word_eng == input)
-                                Console.WriteLine($"Swedish for {gloss.word_eng} is {gloss.word_swe}");
-                        }
+                        //Gjorde en metod istället
+                        TranslateWord(input);
                     }
                 }
+                //Tror inte help behöver en metod, eftersom den inte har koddubbletter
                 else if (command == "help")
                 {
                     Console.WriteLine("Följande kommandon finns:");
@@ -140,6 +126,19 @@
                 }
             }
             while (true);
+        }
+
+        private static void TranslateWord(string word)
+        {
+            //får error "object reference not set to an instance of an object" om man inte har laddat en fil
+            foreach (SweEngGloss gloss in dictionary)
+            {
+                //blir ingen utskrift om man försöker med ett ord som inte finns, fast programmet fortsätter köra
+                if (gloss.word_swe == word)
+                    Console.WriteLine($"English for {gloss.word_swe} is {gloss.word_eng}");
+                if (gloss.word_eng == word)
+                    Console.WriteLine($"Swedish for {gloss.word_eng} is {gloss.word_swe}");
+            }
         }
 
         private static void DeleteWord(string swedish, string english)
