@@ -24,6 +24,7 @@
             do
             {
                 Console.Write("> ");
+                //Tror att spliten här gör så att 'load x' inte fungerar. testa med split " "?
                 string[] argument = Console.ReadLine().Split();
                 string command = argument[0];
                 if (command == "quit")
@@ -53,6 +54,7 @@
                         Console.WriteLine($"{gloss.word_swe, -10}  - {gloss.word_eng,-10}");
                     }
                 }
+                //Tror inte 'new' behöver bli en metod.
                 else if (command == "new")
                 {
                     if (argument.Length == 3)
@@ -77,14 +79,7 @@
                 {
                     if (argument.Length == 3)
                     {
-                        int index = -1;
-                        for (int i = 0; i < dictionary.Count; i++) {
-                            SweEngGloss gloss = dictionary[i];
-                            if (gloss.word_swe == argument[1] && gloss.word_eng == argument[2])
-                                index = i;
-                        }
-                        //Error om man försöker ta bort ett element som inte finns
-                        dictionary.RemoveAt(index);
+                        DeleteWord(argument[1], argument[2]);
                     }
                     else if (argument.Length == 1)
                     {
@@ -93,15 +88,8 @@
                         string swedish = Console.ReadLine();
                         Console.Write("Write word in English: ");
                         string english = Console.ReadLine();
-                        int index = -1;
-                        //Error om man inte har laddat en lista
-                        for (int i = 0; i < dictionary.Count; i++)
-                        {
-                            SweEngGloss gloss = dictionary[i];
-                            if (gloss.word_swe == swedish && gloss.word_eng == english)
-                                index = i;
-                        }
-                        dictionary.RemoveAt(index);
+                        //Gjorde koden efter readlines till en metod, eftersom den är lika mellan if satserna.
+                        DeleteWord(swedish, english);
                     }
                 }
                 else if (command == "translate")
@@ -152,6 +140,19 @@
                 }
             }
             while (true);
+        }
+
+        private static void DeleteWord(string swedish, string english)
+        {
+            int index = -1;
+            //Error om man inte har laddat en lista
+            for (int i = 0; i < dictionary.Count; i++)
+            {
+                SweEngGloss gloss = dictionary[i];
+                if (gloss.word_swe == swedish && gloss.word_eng == english)
+                    index = i;
+            }
+            dictionary.RemoveAt(index);
         }
 
         private static void LoadFile(string filePath)
