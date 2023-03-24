@@ -34,10 +34,11 @@
                 }
                 else if (command == "load")
                 {
-                    //FIXME: kan inte ladda min testfil med 'load C:\Users\Hanne\Desktop\Datalogiskt tänkande och Problemlösning\Vecka 2\test.txt'
+                    //kan inte ladda min testfil med 'load C:\Users\Hanne\Desktop\Datalogiskt tänkande och Problemlösning\Vecka 2\test.txt'
+                    //tror det är för att pathen innehåller mellanslag, vilket splittar 'argument'
                     if (argument.Length == 2)
                     {
-                        //extraherade innehållet till en metod
+                        Console.WriteLine(argument[0] + " " + argument[1]);
                         LoadFile(argument[1]);
                     }
                     else if(argument.Length == 1)
@@ -48,10 +49,18 @@
                 }
                 else if (command == "list")
                 {
-                    //FIXME: krashar om man inte har laddat en fil
-                    foreach(SweEngGloss gloss in dictionary)
+                    //Märkte att debuggern stannar, även om man har en try-catch sats.
+                    //Dock fungerar programmet fortfarande om man kör 'continue'.
+                    try
                     {
-                        Console.WriteLine($"{gloss.word_swe, -10}  - {gloss.word_eng,-10}");
+                        foreach (SweEngGloss gloss in dictionary)
+                        {
+                            Console.WriteLine($"{gloss.word_swe,-10}  - {gloss.word_eng,-10}");
+                        }
+                    }
+                    catch (NullReferenceException error)
+                    {
+                        Console.WriteLine($"ERROR: {error}\nListan är tom!");
                     }
                 }
                 //Tror inte new behöver en metod, eftersom den bara har en rad som är dubblett
@@ -62,6 +71,7 @@
                         //Fick error: object reference not set to an instance of an object
                         //om man inte har laddat från en fil
                         dictionary.Add(new SweEngGloss(argument[1], argument[2]));
+                        //Om man bara skriver in ett ord händer ingenting, men programmet fortsätter köra
                     }
                     else if(argument.Length == 1)
                     {
@@ -70,7 +80,7 @@
                         string swedish = Console.ReadLine();
                         Console.Write("Write word in English: ");
                         string english = Console.ReadLine();
-                        //Fick error: object reference not set to an instance of an object
+                        //FIXME: System.NullReferenceException: 'Object reference not set to an instance of an object.'
                         //om man inte har laddat från en fil
                         dictionary.Add(new SweEngGloss(swedish, english));
                     }
@@ -144,19 +154,34 @@
         private static void DeleteWord(string swedish, string english)
         {
             int index = -1;
-            //Error om man inte har laddat en lista
+            //FIXME: System.NullReferenceException: 'Object reference not set to an instance of an object.'
+            //Om listan är tom
             for (int i = 0; i < dictionary.Count; i++)
             {
                 SweEngGloss gloss = dictionary[i];
+                //Inget ord tas bort om man bara skriver på svenska
                 if (gloss.word_swe == swedish && gloss.word_eng == english)
                     index = i;
             }
+            //FIXME: System.ArgumentOutOfRangeException: 'Index was out of range. Must be non-negative and less than the size of the collection. Arg_ParamName_Name'
+            //Om man stavar fel på ett av orden
             dictionary.RemoveAt(index);
         }
 
         private static void LoadFile(string filePath)
         {
             //FIXME: får 'could not find file' om man inte skriver in en riktig path
+            /*
+             System.IO.FileNotFoundException: 'Could not find file 'C:\Users\Hanne\Source\Repos\DTP Dag 10 inlämning\bin\Debug\net6.0\computing.lis'.'
+            */
+            //FIXME: får problem med directory
+            /*
+            System.IO.DirectoryNotFoundException: 'Could not find a part of the path 'C:\Users\Hanne\Source\Repos\DTP Dag 10 inlämning\bin\Debug\net6.0\Dokument\test.txt'.'
+            */
+            //FIXME: access denied till min mapp?
+            /*
+            System.UnauthorizedAccessException: 'Access to the path 'C:\Users\Hanne\Desktop\test' is denied.'
+            */
             using (StreamReader textFile = new StreamReader(filePath))
             {
                 dictionary = new List<SweEngGloss>(); // Empty it!
